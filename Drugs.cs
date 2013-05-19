@@ -40,11 +40,23 @@ namespace PHP_Drugs
             else
                 return string.Empty;
         }
+        public string pop_activeIngredient(int order)
+        {
+            if (this.activeIngredient.Count != 0 && order <= this.count)
+            {
+                string value = this.activeIngredient[order] as string;
+                this.activeIngredient.RemoveAt(order);
+                count--;
+                return value;
+            }
+            else
+                return string.Empty;
+        }
         public string getIngredientAt(int value)
         {
-            if (value <= this.count)
+            if (value <= this.count && value != 0)
             {
-                return this.activeIngredient[value] as string;
+                return this.activeIngredient[value - 1] as string;
             }
             else
                 return "";
