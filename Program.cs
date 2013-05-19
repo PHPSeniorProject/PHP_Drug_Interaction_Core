@@ -9,7 +9,9 @@ namespace PHP_Drug_Interaction_Core
     {
         static void Main(string[] args)
         {
-            
+            Xml_Parser x = new Xml_Parser();
+
+            x.getDrugList();
         }
     }
 }
