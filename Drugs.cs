@@ -40,6 +40,15 @@ namespace PHP_Drugs
             else
                 return string.Empty;
         }
+        public string getIngredientAt(int value)
+        {
+            if (value <= this.count)
+            {
+                return this.activeIngredient[value] as string;
+            }
+            else
+                return "";
+        }
         public string label 
         {
             set { this.label_info = value; }
