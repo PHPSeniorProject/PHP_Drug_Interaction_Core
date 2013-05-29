@@ -43,6 +43,7 @@
     <Compile Include="Drugs.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Canceled\Xml_Creator_For_AI.cs" />
     <Compile Include="Xml_Parser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

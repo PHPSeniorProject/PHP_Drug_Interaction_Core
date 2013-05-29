@@ -9,6 +9,7 @@ namespace PHP_Drug_Interaction_Core
     class Xml_Creator_For_AI
     {
         private static StreamWriter fileWriter;
+        private static string[] organs = { "Heart", "blood vessels", "blood", " pharynx", "stomach", "intestines", "salivary glands", "pancreas", " liver", "gallbladder", "testes", "ovaries", "hypothalamus", "kidneys", "pituitary", " thyroid", "parathyroid", "adrenal", "intestinal", "thymus", "pineal", "White blood cells", "lymph vessels and nodes", "spleen, thymus", "lymphatic tissues", "Skin", "Cartilage", "bone", "ligaments", "tendons", " joints", "skeletal muscle", "salivary glands", "gallbladder", "intestines", "urethras", "bladder", "urethra" };
         public static void Start_Create(Drugs[] drugList)
         {
             using (fileWriter = new StreamWriter("interaction.xml", true))
@@ -33,7 +34,8 @@ namespace PHP_Drug_Interaction_Core
                             secondDrug = rnd.Next(1, drugList.Length);
                         }
                         int ingRnd2 = rnd.Next(1, drugList[secondDrug].count);
-                        fileWriter.Write(String.Format("<Interaction>{0}</Interaction>" + "\n", drugList[secondDrug].getIngredientAt(ingRnd2)));
+                        int orgRnd = rnd.Next(1, organs.Length);
+                        fileWriter.Write(String.Format("<Interaction Organ = {1}>{0}</Interaction>" + "\n", drugList[secondDrug].getIngredientAt(ingRnd2),organs[orgRnd]));
                     }
 
                     fileWriter.Write("</Ingredient>" + "\n");

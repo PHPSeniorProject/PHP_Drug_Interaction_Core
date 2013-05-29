@@ -5,18 +5,35 @@ using System.Text;
 using System.Xml;
 using System.IO;
 using PHP_Drugs;
+using System.Collections;
 namespace PHP_Drug_Interaction_Core
 {
     class Xml_Parser
     {
-        private XmlDocument drugDoc;
-        private string docPath = "Drugs.xml";
+        public enum parserType { Drugs, Interaction };
 
-        public Xml_Parser()
+        private XmlDocument drugDoc,InteractionDoc;
+        private string docPathDrugs = "Drugs.xml";
+        private string docPathInteraction = "Interactions.xml";
+
+        public Xml_Parser(parserType type)
         {
-            FileStream docIn = new FileStream(docPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            drugDoc = new XmlDocument();
-            drugDoc.Load(docIn);
+
+            switch (type)
+            {
+                case parserType.Drugs:
+                     FileStream docInDrugs = new FileStream(docPathDrugs, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                     drugDoc = new XmlDocument();
+                     drugDoc.Load(docInDrugs);
+                    break;
+                case parserType.Interaction:
+                     FileStream docInInteraction = new FileStream(docPathInteraction, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                     InteractionDoc = new XmlDocument();
+                     InteractionDoc.Load(docInInteraction);
+                    break;
+                default:
+                    break;
+            }
         }
         public Drugs[] getDrugList()
         {
@@ -44,6 +61,25 @@ namespace PHP_Drug_Interaction_Core
             {
                 return null;
             }
+        }
+
+        public String[] getIngredientList(Drugs[] drugs)
+        {
+            string[] ingList;
+            string temp ="";
+
+            for (int i = 0; i < drugs.Length; i++)
+            {
+                for (int k = 0; k < drugs[i].count; k++)
+                {
+                    string drug = drugs[i].getIngredientAt(k+1);
+                    if (!temp.Contains(drug))
+                    {
+                        temp += String.Format(drugs[i].getIngredientAt(k + 1) + ",");
+                    }
+                }
+            }
+            return ingList = temp.Split(',');
         }
     }
 }
