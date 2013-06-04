@@ -40,6 +40,61 @@ namespace PHP_Drug_Interaction_Core
             if (drugDoc != null)
             {
                 XmlNodeList drugList = drugDoc.GetElementsByTagName("Drug");
+                Drugs[] allDrugs = new Drugs[drugList.Count];
+
+                for (int i = 0; i < drugList.Count; i++)
+                {
+                    allDrugs[i] = new Drugs(drugList[i].FirstChild.InnerText);
+                    allDrugs[i].prospectus = drugList[i].FirstChild.NextSibling.InnerText;
+
+                    XmlNode iterator = drugList[i].FirstChild.NextSibling.NextSibling.FirstChild;
+                    while (iterator != null)
+                    {
+                        XmlNode innerIterator = iterator.FirstChild;
+                        while (innerIterator != null)
+                        {
+                            double drugPer, organPer, foodPer;
+                            string actInterName, organName, foodName;
+
+                            XmlNode temp = innerIterator.FirstChild;
+
+                            actInterName = getAttributeFromNode(innerIterator, 0);
+                            drugPer = Double.Parse(getAttributeFromNode(innerIterator, 1));
+                            organName = temp.InnerText;
+                            organPer = Double.Parse(getAttributeFromNode(temp, 0));
+                            foodName = temp.NextSibling.InnerText;
+                            foodPer = Double.Parse(getAttributeFromNode(temp.NextSibling, 0));
+
+                            allDrugs[i].addActiveIngredientTransaction(actInterName, drugPer, organName, organPer, foodName, foodPer);
+                            innerIterator = innerIterator.NextSibling;
+                        }
+
+
+                        allDrugs[i].executeIngredient(getAttributeFromNode(iterator, 0));
+                        iterator = iterator.NextSibling;
+                    }
+                }
+                return allDrugs;
+            }
+            else
+                return null;
+
+            
+        }
+        private string getAttributeFromNode(XmlNode node, int attOrder)
+        {
+            string attributeValue;
+            XmlAttributeCollection attColl = node.Attributes;
+            attributeValue = attColl[attOrder].Value.ToString();
+
+            return attributeValue;
+        }
+        /*
+        public Drugs[] getDrugList()
+        {
+            if (drugDoc != null)
+            {
+                XmlNodeList drugList = drugDoc.GetElementsByTagName("Drug");
                 Drugs[] alldrugs = new Drugs[drugList.Count];
 
                 for (int i = 0; i < drugList.Count; i++)
@@ -61,9 +116,9 @@ namespace PHP_Drug_Interaction_Core
             {
                 return null;
             }
-        }
+        }*/
 
-        public String[] getIngredientList(Drugs[] drugs)
+       /* public String[] getIngredientList(Drugs[] drugs)
         {
             string[] ingList;
             string temp ="";
@@ -80,6 +135,6 @@ namespace PHP_Drug_Interaction_Core
                 }
             }
             return ingList = temp.Split(',');
-        }
+        }*/
     }
 }

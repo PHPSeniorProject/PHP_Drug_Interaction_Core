@@ -42,6 +42,7 @@ namespace PHP_Drugs
                 if (!String.IsNullOrEmpty(p_toInteraction))
                 {
                     InteractionList.Add(p_toInteraction, value);
+                    value.opInteractionCount++;
                 }
             }
 
@@ -61,12 +62,12 @@ namespace PHP_Drugs
         }
         public class Interaction
         {
-            double drugPer;
-            string organName;
-            double organPer;
-            string foodName;
-            double foodPer;
-
+            private double drugPer;
+            private string organName;
+            private double organPer;
+            private string foodName;
+            private double foodPer;
+            private int interactionCount;
             public Interaction()
             { 
                 this.drugPer = 0;
@@ -74,6 +75,7 @@ namespace PHP_Drugs
                 this.organPer = 0;
                 this.foodName = String.Empty;
                 this.foodPer = 0;
+                this.interactionCount = 0;
             }
 
             public double opDrugPer
@@ -99,6 +101,11 @@ namespace PHP_Drugs
             public double opFoodPer
             {
                 get { return this.foodPer; }
+                set { this.foodPer = value; }
+            }
+            public int opInteractionCount
+            {
+                get { return this.interactionCount; }
                 set { this.foodPer = value; }
             }
         };
