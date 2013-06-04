@@ -23,7 +23,7 @@ namespace PHP_Drug_Interaction_Core
                     {
                         continue;
                     }
-                    fileWriter.Write(String.Format("<Ingredient Label = {0}>" + "\n", drugList[i].pop_activeIngredient()));
+                    //fileWriter.Write(String.Format("<Ingredient Label = {0}>" + "\n", drugList[i].pop_activeIngredient()));
 
                     int count = rnd.Next(1, 4);
                     for (int k = 0; k < count; k++)
@@ -35,7 +35,7 @@ namespace PHP_Drug_Interaction_Core
                         }
                         int ingRnd2 = rnd.Next(1, drugList[secondDrug].count);
                         int orgRnd = rnd.Next(1, organs.Length);
-                        fileWriter.Write(String.Format("<Interaction Organ = {1}>{0}</Interaction>" + "\n", drugList[secondDrug].getIngredientAt(ingRnd2),organs[orgRnd]));
+                        //fileWriter.Write(String.Format("<Interaction Organ = {1}>{0}</Interaction>" + "\n", drugList[secondDrug].getIngredientAt(ingRnd2),organs[orgRnd]));
                     }
 
                     fileWriter.Write("</Ingredient>" + "\n");

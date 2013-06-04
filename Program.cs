@@ -10,15 +10,15 @@ namespace PHP_Drug_Interaction_Core
     {
         static void Main(string[] args)
         {
-            Xml_Parser a = new Xml_Parser(Xml_Parser.parserType.Drugs);
-            Drugs[] d = a.getDrugList();
-
-            string[] arr = a.getIngredientList(d);
-
-            for (int i = 0; i < arr.Length; i++)
-            {
-                Console.WriteLine(arr[i] + ",");
-            }
+            Drugs d = new Drugs("Majezik");
+            d.prospectus = "Agri kesici";
+            d.addActiveIngredientTransaction("b1",90,"Kalp",35,"",0.0);
+            d.addActiveIngredientTransaction("c1", 80, "Bobrek", 45, "Ispanak", 14);
+            d.addActiveIngredientTransaction("d1", 70, "Akciger", 15, "Peynir", 100);
+            d.executeIngredient("a1");
+            
+            d.addActiveIngredientTransaction("x", 90, "Kan", 35, "Balik", 0.0);
+            d.executeIngredient("f1");
             Console.Read();
         }
     }

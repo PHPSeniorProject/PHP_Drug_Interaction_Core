@@ -50,7 +50,7 @@ namespace PHP_Drug_Interaction_Core
                     XmlNode tempNode = drugList[i].FirstChild.NextSibling.NextSibling.FirstChild;
                     while (tempNode != null)
                     {
-                        alldrugs[i].push_activeIngredient(tempNode.InnerText);
+                        //alldrugs[i].push_activeIngredient(tempNode.InnerText);
                         tempNode = tempNode.NextSibling;
                     }
 
@@ -72,10 +72,10 @@ namespace PHP_Drug_Interaction_Core
             {
                 for (int k = 0; k < drugs[i].count; k++)
                 {
-                    string drug = drugs[i].getIngredientAt(k+1);
+                    string drug = "";//drugs[i].getIngredientAt(k+1);
                     if (!temp.Contains(drug))
                     {
-                        temp += String.Format(drugs[i].getIngredientAt(k + 1) + ",");
+                        //temp += String.Format(drugs[i].getIngredientAt(k + 1) + ",");
                     }
                 }
             }
