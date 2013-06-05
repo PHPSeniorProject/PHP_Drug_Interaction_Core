@@ -54,18 +54,21 @@ namespace PHP_Drug_Interaction_Core
                         while (innerIterator != null)
                         {
                             double drugPer, organPer, foodPer;
-                            string actInterName, organName, foodName;
+                            string actInterName, organName, foodName,organDesc ,foodDesc;
 
                             XmlNode temp = innerIterator.FirstChild;
 
                             actInterName = getAttributeFromNode(innerIterator, 0);
                             drugPer = Double.Parse(getAttributeFromNode(innerIterator, 1));
-                            organName = temp.InnerText;
-                            organPer = Double.Parse(getAttributeFromNode(temp, 0));
-                            foodName = temp.NextSibling.InnerText;
-                            foodPer = Double.Parse(getAttributeFromNode(temp.NextSibling, 0));
+                            organName = getAttributeFromNode(temp,0);
+                            organDesc = temp.InnerText;
+                            organPer = Double.Parse(getAttributeFromNode(temp, 1));
+                            foodName = getAttributeFromNode(temp.NextSibling, 0);
+                            foodDesc = temp.NextSibling.InnerText;
+                            foodPer = Double.Parse(getAttributeFromNode(temp.NextSibling, 1));
 
-                            allDrugs[i].addActiveIngredientTransaction(actInterName, drugPer, organName, organPer, foodName, foodPer);
+                            allDrugs[i].addActiveIngredientTransaction(actInterName, drugPer, organName, organDesc,
+                                organPer, foodName, foodDesc,foodPer);
                             innerIterator = innerIterator.NextSibling;
                         }
 

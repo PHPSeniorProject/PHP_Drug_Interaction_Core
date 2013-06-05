@@ -8,112 +8,11 @@ namespace PHP_Drugs
 {
     class Drugs
     {
-        public class ActiveIngredient
-        {
-            private string Label_Info;
-            public Hashtable InteractionList;
-
-            public ActiveIngredient()
-            {
-                this.Label_Info = String.Empty;
-                this.InteractionList = new Hashtable();
-            }
-
-            public string opLabelInfo
-            {
-                get { return this.Label_Info;}
-                set { this.Label_Info = value; }
-            }
-            public void resetList()
-            {
-                this.InteractionList.Clear();
-            }
-
-            public void addInteraction(string p_toInteraction, double p_drugPer, string p_organName,
-                                            double p_organPer, string p_foodName, double p_foodPer)
-            {
-                Interaction value = new Interaction();
-                value.opDrugPer = p_drugPer;
-                value.opOrganName = p_organName;
-                value.opOrganPer = p_organPer;
-                value.opFoodName = p_foodName;
-                value.opFoodPer = p_foodPer;
-
-                if (!String.IsNullOrEmpty(p_toInteraction))
-                {
-                    InteractionList.Add(p_toInteraction, value);
-                    value.opInteractionCount++;
-                }
-            }
-
-            public Interaction getInteraction(string p_activeIngredientName)
-            {
-                try
-                {
-                    Interaction value = (Interaction)this.InteractionList[p_activeIngredientName];
-                    return value;
-                }
-                catch (Exception)
-                {
-                    return new Interaction();
-                    throw;
-                }
-            }
-        }
-        public class Interaction
-        {
-            private double drugPer;
-            private string organName;
-            private double organPer;
-            private string foodName;
-            private double foodPer;
-            private int interactionCount;
-            public Interaction()
-            { 
-                this.drugPer = 0;
-                this.organName = String.Empty;
-                this.organPer = 0;
-                this.foodName = String.Empty;
-                this.foodPer = 0;
-                this.interactionCount = 0;
-            }
-
-            public double opDrugPer
-            {
-                get { return this.drugPer; }
-                set {this.drugPer = value;}
-            }
-            public string opOrganName
-            {
-                get { return this.organName; }
-                set { this.organName = value; }
-            }
-            public double opOrganPer
-            {
-                get { return this.organPer; }
-                set { this.organPer = value; }
-            }
-            public string opFoodName
-            {
-                get { return this.foodName; }
-                set { this.foodName = value; }
-            }
-            public double opFoodPer
-            {
-                get { return this.foodPer; }
-                set { this.foodPer = value; }
-            }
-            public int opInteractionCount
-            {
-                get { return this.interactionCount; }
-                set { this.foodPer = value; }
-            }
-        };
         private string label_info;
         private string prospectus_info;
         private int ingredientCount;
         private ActiveIngredient activeIng;
-        private Hashtable activeIngredientList;
+        private LinkedList<ActiveIngredient> activeIngredientList;
 
         public Drugs(string p_label)
         {
@@ -121,12 +20,12 @@ namespace PHP_Drugs
             this.prospectus_info = "";
             this.ingredientCount = 0;
             this.activeIng = new ActiveIngredient();
-            this.activeIngredientList = new Hashtable();
+            this.activeIngredientList = new LinkedList<ActiveIngredient>();
         }
-        public void addActiveIngredientTransaction(string toAIngredient, double p_drugPer, string p_organName,
-                                            double p_organPer, string p_foodName, double p_foodPer)
+        public void addActiveIngredientTransaction(string toAIngredient, double p_drugPer, string p_organName, string p_organDesc,
+                                            double p_organPer, string p_foodName, string p_foodDesc, double p_foodPer)
         {
-            this.activeIng.addInteraction(toAIngredient, p_drugPer, p_organName, p_organPer, p_foodName, p_foodPer);
+            this.activeIng.addInteraction(toAIngredient, p_drugPer, p_organName, p_organDesc, p_organPer, p_foodName, p_foodDesc, p_foodPer);
         }
         private void resetIngredient(ActiveIngredient value)
         {
@@ -138,7 +37,7 @@ namespace PHP_Drugs
             this.activeIng.opLabelInfo = p_fromAIngredient;
             ActiveIngredient temp = new ActiveIngredient();
             temp = assignActiveIngredient(temp, this.activeIng);
-            this.activeIngredientList.Add(activeIng.opLabelInfo,temp);
+            this.activeIngredientList.AddLast(temp);
             count++;
             resetIngredient(this.activeIng);
 
@@ -146,20 +45,22 @@ namespace PHP_Drugs
         private ActiveIngredient assignActiveIngredient(ActiveIngredient first ,ActiveIngredient second)
         {
             first.opLabelInfo = second.opLabelInfo;
-            first.InteractionList = (Hashtable)second.InteractionList.Clone();
+            Interaction[] temp = new Interaction[second.InteractionList.Count];
+            for (int i = 0; i < second.InteractionList.Count; i++)
+            {
+                temp[i] = new Interaction();
+            }
+
+            second.InteractionList.CopyTo(temp,0);
+            for (int k = 0; k < second.InteractionList.Count; k++)
+            {
+                first.InteractionList.AddLast(temp[k]);
+            }
             return first;
         }
-        public ActiveIngredient getActiveIngredient(string p_activeIngredientName)
+        public LinkedList<ActiveIngredient> getActiveIngredientList()
         {
-            try
-            {
-                return (ActiveIngredient)this.activeIngredientList[p_activeIngredientName];
-            }
-            catch (Exception)
-            {
-                return new ActiveIngredient();
-                throw;
-            }
+            return this.activeIngredientList;
         }
         public string label 
         {
@@ -175,6 +76,120 @@ namespace PHP_Drugs
         {
             set { this.ingredientCount = value; }
             get { return this.ingredientCount; }
+        }
+    }
+    public class ActiveIngredient
+    {
+        private string Label_Info;
+        public LinkedList<Interaction> InteractionList;
+
+        public ActiveIngredient()
+        {
+            this.Label_Info = String.Empty;
+            this.InteractionList = new LinkedList<Interaction>();
+        }
+
+        public string opLabelInfo
+        {
+            get { return this.Label_Info; }
+            set { this.Label_Info = value; }
+        }
+        public void resetList()
+        {
+            this.InteractionList.Clear();
+        }
+
+        public void addInteraction(string p_toInteraction, double p_drugPer, string p_organName, string p_organDesc,
+                                        double p_organPer, string p_foodName, string p_foodDesc, double p_foodPer)
+        {
+            Interaction value = new Interaction();
+            value.opToInteraction = p_toInteraction;
+            value.opDrugPer = p_drugPer;
+            value.opOrganName = p_organName;
+            value.opOrganDesc = p_organDesc;
+            value.opOrganPer = p_organPer;
+            value.opFoodName = p_foodName;
+            value.opFoodDesc = p_foodDesc;
+            value.opFoodPer = p_foodPer;
+
+            if (!String.IsNullOrEmpty(p_toInteraction))
+            {
+                InteractionList.AddLast(value);
+                value.opInteractionCount++;
+            }
+        }
+
+        public LinkedList<Interaction> getInteractionList()
+        {
+            return this.InteractionList;
+        }
+    }
+
+    public class Interaction
+    {
+        private string toInteraction;
+        private double drugPer;
+        private string organName;
+        private string organDesc;
+        private double organPer;
+        private string foodName;
+        private string foodDesc;
+        private double foodPer;
+        private int interactionCount;
+        public Interaction()
+        {
+            this.toInteraction = String.Empty;
+            this.drugPer = 0;
+            this.organName = String.Empty;
+            this.organPer = 0;
+            this.foodName = String.Empty;
+            this.foodPer = 0;
+            this.interactionCount = 0;
+        }
+        public string opToInteraction
+        {
+            get { return this.toInteraction; }
+            set { this.toInteraction = value; }
+        }
+        public double opDrugPer
+        {
+            get { return this.drugPer; }
+            set { this.drugPer = value; }
+        }
+        public string opOrganName
+        {
+            get { return this.organName; }
+            set { this.organName = value; }
+        }
+        public string opOrganDesc
+        {
+            get { return this.organDesc; }
+            set { this.organDesc = value; }
+        }
+        public double opOrganPer
+        {
+            get { return this.organPer; }
+            set { this.organPer = value; }
+        }
+        public string opFoodName
+        {
+            get { return this.foodName; }
+            set { this.foodName = value; }
+        }
+        public string opFoodDesc
+        {
+            get { return this.foodDesc; }
+            set { this.foodDesc = value; }
+        }
+        public double opFoodPer
+        {
+            get { return this.foodPer; }
+            set { this.foodPer = value; }
+        }
+        public int opInteractionCount
+        {
+            get { return this.interactionCount; }
+            set { this.foodPer = value; }
         }
     }
 }
